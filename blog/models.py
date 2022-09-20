@@ -1,8 +1,9 @@
-from unicodedata import category
+import imp
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from users.models import CustomUser
 from django.utils import timezone
+from  django.urls import reverse
 
 class Post(models.Model):
     title = models.CharField(max_length=200)
@@ -19,6 +20,13 @@ class Post(models.Model):
         self.published_Date = timezone.now
         self.save()
     
+    def total_Likes(self):
+        return self.like.count()
+
+    def get_absolute_url(self):
+        return reverse('home')
+
+
     def __str__(self):
         return self.title
 
@@ -35,8 +43,12 @@ class Comment(models.Model):
         self.approved_Comment = True
         self.save
 
+    def get_absolute_url(self):
+        return reverse("post_detail",kwargs={'pk': self.pk})
+    
     def __str__(self):
         return self.content
+    
 
 
 
