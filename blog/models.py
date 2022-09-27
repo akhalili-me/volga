@@ -9,6 +9,7 @@ class Post(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
     summary = models.CharField(max_length=255)
+    header_image = models.ImageField(blank=True,upload_to='post/headers')
     created_Date = models.DateTimeField(default=timezone.now())
     published_Date = models.DateTimeField(blank=True,null=True)
     like = models.IntegerField(default=0)
@@ -28,7 +29,7 @@ class Post(models.Model):
 
 
     def __str__(self):
-        return self.title
+        return self.title + ' | ' + self.author
 
 
 class Comment(models.Model):
@@ -50,8 +51,6 @@ class Comment(models.Model):
         return self.content
     
 
-
-
 class Tag(models.Model):
     title = models.CharField(max_length=50)
     count = models.IntegerField()
@@ -68,6 +67,10 @@ class Post_Tag(models.Model):
 class Category(models.Model):
     title = models.CharField(max_length=50)
     content = models.TextField()
+
+    def get_all(self):
+        return self.objects.all
+
 
     def __str__(self):
         return self.title
