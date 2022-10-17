@@ -1,10 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render,get_object_or_404,redirect
 from blog.models import *
 from django.views.generic import CreateView,TemplateView,ListView,DetailView,UpdateView,DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from blog.forms import *
 from django.urls import reverse_lazy
-from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 
@@ -47,46 +46,60 @@ class PostDeleteView(LoginRequiredMixin,DeleteView):
 class DraftListView(LoginRequiredMixin,ListView):
     model = Post
     login_url = '/login/'
-    queryset = Post.objects.filter(Q(published_Date__isnull=True) | Q(published_Date = ''))\
-        .order_by('-created_Date')
+    queryset = Post.objects.filter(published_Date__isnull=True).order_by('-created_Date')
     template_name = 'blog/post_drafts.html'
     
-
 
 #############################################
 #############################################
 
 @login_required
+def publish_post(request,pk):
+    if request.method == 'POST':
+        post = get_object_or_404(Post,id=pk)
+        post.publish_post()
+
+
+
+@login_required
 def add_comment(request,pk):
-
+    post = get_object_or_404(Post,id=pk)
     if request.method == "POST":
-        comment_form = CommentForm(request.POST)
+        form = CommentForm(request.POST)
         if CommentForm.is_valid():
-
-            new_comment = comment_form.save(commit=False)
-            new_comment.author = request.user
-            new_comment.post = Post.objects.get(id=pk)
-            new_comment.save()
-            
-            pass
-
-    
-    form = CommentForm()
-    render(request,'blog/add_comment.html',{'comment_form': form})
-
-
+            comment = form.save(commit=False)
+            comment.author = request.user
+            comment.post = post
+            comment.save()
+            return redirect('post',pk=post.id)
+    else:
+        form = CommentForm()
+        render(request,'blog/add_comment.html',{'comment_form': form})
 
 
 
 @login_required
 def approve_comment(request,pk):
-
     if request.user.is_superuser:
+        comment = get_object_or_404(Comment,id=pk)
         if request.method == 'POST':
-            comment = Comment.objects.get(id=pk)
             comment.approve()
+            return ##To DO
         else:
             not_approved_comments = Comment.objects.filter('approved_Comment' == False)
             render(request,'blog/approve_comments.html',{'comments': not_approved_comments})
     else:
-        Http404('Page not found')
+        raise Http404('Page not found')
+
+
+@login_required
+def remove_comment(request,pk):
+    if request.user.is_superuser:
+        comment = get_object_or_404(Comment,id=pk)
+        comment.delete()
+        return ##To DO
+    else:
+        raise Http404('Page not found')
+
+
+        

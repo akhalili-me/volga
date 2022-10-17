@@ -33,7 +33,7 @@ class Post(models.Model):
 
 class Comment(models.Model):
     content = models.CharField(max_length=500)
-    created_Date = models.DateTimeField(default=timezone.now())
+    created_Date = models.DateTimeField(default= timezone.now())
     approved_Comment = models.BooleanField(default=False)
 
     author = models.ForeignKey(CustomUser, verbose_name=_("Author"), on_delete=models.CASCADE)
