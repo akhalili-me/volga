@@ -1,9 +1,7 @@
 from django.shortcuts import render,redirect
 from blog.forms import *
 from users.forms import *
-from django.urls import reverse_lazy
 from users.models import *
-from django.contrib.auth.decorators import login_required
 
 def forgot_password(request):
     if request.method == 'POST':
@@ -24,7 +22,6 @@ def register(request):
             return redirect('/login/?signed=true')
         else:
             return render(request,'registration/register.html',{'form': form})
-
 
     form = RegisterForm()
     return render(request,'registration/register.html',{'form': form})
