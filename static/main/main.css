@@ -600,6 +600,60 @@ i{
     max-width: 50rem;
     margin-bottom: 1rem;
 }
+
+/* New Post */
+.new-post-container{
+    margin-top: 8rem;
+    
+}
+
+.new-post-form p{
+    margin-bottom: 20px;
+}
+
+.new-post-container button{
+    color: rgb(232, 230, 227);
+    background-color: rgb(13, 105, 206);
+    border-color: rgb(13, 94, 182);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    width: 20%;
+    font-size: 2rem;
+    margin-top: 4rem;
+
+}
+.center{
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -50%)
+}
+
+.form-control {
+    display: block;
+    width: 100%;
+    padding: .375rem .75rem;
+    font-size: 1.5rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    /* -webkit-appearance: none; */
+    /* -moz-appearance: none; */
+    /* appearance: none; */
+    border-radius: .375rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.form-control:focus {
+    border-color: #12bcfe;
+}
+
+.new-post-form input[type='checkbox']{
+    display: inline;
+    width: auto;
+}
 /* Media queries */
 
 @media screen and (min-width: 700px){

@@ -10,24 +10,52 @@ from django.http import Http404
 # class Home(TemplateView):
 #     template_name = 'main/home.html'
 
+def Home(request):
+    trending_articles = Post.objects.filter(published_Date__isnull=False).order_by('-views')[:4]
+    latest_articles = Post.objects.filter(published_Date__isnull=False).order_by('-published_Date')[:6]
+    categories = Category.objects.all()
+    latest_liked_articles = Post.objects.filter(published_Date=None).order_by('-like')[:3]
+
+    return render(request,'main/home.html')
 
 class PostListView(ListView):
-    model = Post
-    queryset = Post.objects.all().order_by('-published_Date')
-    template_name = 'main/home.html'
+    queryset = Post.objects.filter(published_Date__isnull=False).order_by('-published_Date')
+    template_name = 'blog/post_archive.html'
 
 
 class PostDetailView(DetailView):
-    model: Post
+    model = Post
     template_name = 'blog/post.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        post = Post.objects.get(pk = self.kwargs['pk'])
+
+        if post.published_Date is None :
+            raise Http404('Page not found')
+
+        return context
 
 
 class PostCreateView(LoginRequiredMixin,CreateView):
     login_url = '/login'
     model = Post
     form_class = PostForm
-    # redirect_field_name = '/'
     template_name = 'blog/post_create.html'
+
+    def form_valid(self, form):
+        self.post = form.save(commit=False)
+        self.post.author = self.request.user
+        self.post.save()
+        if form.cleaned_data['publish'] == True:
+            self.post.publish_post()
+
+        return redirect('/')
+
+    
+
+
 
 class PostUpdateView(LoginRequiredMixin,UpdateView):
     login_url = '/login/'
@@ -58,7 +86,7 @@ def publish_post(request,pk):
     if request.method == 'POST':
         post = get_object_or_404(Post,id=pk)
         post.publish_post()
-
+        return redirect('blog:post',pk=pk)
 
 
 @login_required

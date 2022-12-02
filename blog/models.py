@@ -3,12 +3,34 @@ from django.utils.translation import gettext_lazy as _
 from users.models import CustomUser
 from django.utils import timezone
 from  django.urls import reverse
+import os
+from uuid import uuid4
+from django.utils.deconstruct import deconstructible
+
+@deconstructible
+class PathAndRename(object):
+
+    def __init__(self, sub_path):
+        self.path = sub_path
+
+    def __call__(self, instance, filename):
+        ext = filename.split('.')[-1]
+        # set filename as random string
+        filename = '{}.{}'.format(uuid4().hex, ext)
+        # return the whole path to the file
+        return os.path.join(self.path, filename)
+
+path_and_rename = PathAndRename('post/headers')
+
+#########################
+#########################
+
 
 class Post(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
     summary = models.CharField(max_length=255)
-    header_image = models.ImageField(blank=True,upload_to='post/headers')
+    header_image = models.ImageField(blank=True,upload_to=path_and_rename)
     created_Date = models.DateTimeField(default=timezone.now())
     published_Date = models.DateTimeField(blank=True,null=True)
     like = models.IntegerField(default=0)
@@ -17,7 +39,7 @@ class Post(models.Model):
     author = models.ForeignKey(CustomUser, verbose_name=_("Author"), on_delete=models.CASCADE)
 
     def publish_post(self):
-        self.published_Date = timezone.now
+        self.published_Date = timezone.now()
         self.save()
     
     def total_Likes(self):
@@ -26,6 +48,7 @@ class Post(models.Model):
     def get_absolute_url(self):
         return reverse('home')
 
+    
 
     def __str__(self):
         return self.title + ' | ' + self.author
@@ -48,6 +71,8 @@ class Comment(models.Model):
     
     def __str__(self):
         return self.content
+
+    
     
 
 class Tag(models.Model):

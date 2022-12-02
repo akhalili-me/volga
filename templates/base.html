@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 {% load static %}
 <html lang="en">
 <head>
@@ -13,6 +12,7 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
     <!-- Swiper.js styles -->
     <link rel="stylesheet"href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css"/>
+    
     <!-- Custom styles -->
     <link rel="stylesheet" href="{% static 'main/main.css' %}">
 </head>
@@ -31,17 +31,27 @@
             <div class="menu" id="menu">
                 <ul class="list">
                     <li class="list-item">
-                        <a href="" class="list-link current">Home</a>
+                        <a href="/" class="list-link current">Home</a>
                     </li>
                     <li class="list-item">
                         <a href="" class="list-link">Categories</a>
                     </li>
-                    <li class="list-item screen-lg-hidden">
-                        <a href="{% url 'users:login' %}" class="list-link">Login</a>
+                    <li class="list-item">
+                        <a href="{% url 'blog:archive' %}" class="list-link">Archive</a>
                     </li>
-                    <li class="list-item screen-lg-hidden">
-                        <a href="{% url 'users:register' %}" class="list-link">Sign up</a>
-                    </li>
+                    {% if user.is_authenticated %}
+                        <li class="list-item screen-lg-hidden">
+                            <p>Welcome, {{ user.get_username }}</p>
+                        </li>
+                    {% else %}
+                        <li class="list-item screen-lg-hidden">
+                            <a href="{% url 'users:login' %}" class="list-link">Login</a>
+                        </li>
+                        <li class="list-item screen-lg-hidden">
+                            <a href="{% url 'users:register' %}" class="list-link">Sign up</a>
+                        </li>
+                    {% endif %}
+                
                 </ul>
             </div>
             <div class="list list-right">
@@ -54,11 +64,21 @@
                     <i class="ri-menu-3-line open-menu-icon"></i>
                     <i class="ri-close-line close-menu-icon"></i>
                 </button>
+                
+                
+                {% if user.is_authenticated %}
+                <a href="{% url 'users:logout' %}" class="list-link screen-sm-hidden">Logout</a>
+                <a href="{% url 'blog:post_create' %}" class="list-link screen-sm-hidden">New Post</a>
+                <span>Welcome {{ user.get_username }}</span>
+
+                {% else %}
 
                 <a href="{% url 'users:login' %}" class="list-link screen-sm-hidden">Login</a>
                 <a href="{% url 'users:register' %}" class="list-link screen-sm-hidden btn sign-up-btn fancy-border">
                     <span>Sign up</span>
                 </a>
+                {% endif %}
+
             </div>
         </nav>
     </header>

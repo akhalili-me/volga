@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="older-posts section">
+    <div class="container">
+        <h2 class="title section-title" data-name="Older Posts">Older Posts</h2>
+        <div class="older-posts-grid-wrapper d-grid">
+
+            {% for post in post_list %}
+            <a href="{% url 'blog:post' pk=post.pk %}" class="article d-grid">
+                <div class="older-posts-article-image-wrapper">
+                    <!-- <img src="/media/{{ post.header_image }}" alt="" class="article-image"> -->
+                    <img src="./media/{{post.header_image}}" alt="" class="article-image">
+                </div>
+
+                <div class="article-data-container">
+                    <div class="article-data">
+                        <span>{{ post.published_Date|date:"M d, Y" }} </span>
+                        <span class="article-data-spacer"></span>
+                        <span>{{ post.like }} Likes</span>
+                      
+                    </div>
+                    <h3 class="title article-title">
+                        {{ post.title }}
+                    </h3>
+                    <p class="article-description">
+                        {{ post.summary }}
+                    </p>
+                    <!-- <h3>Author: {{ post.author }}</h3> -->
+                </div>
+           
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% endblock %}
