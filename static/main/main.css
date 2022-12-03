@@ -654,6 +654,10 @@ i{
     display: inline;
     width: auto;
 }
+
+.top-margin{
+    margin-top: 4rem;
+}
 /* Media queries */
 
 @media screen and (min-width: 700px){

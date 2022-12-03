@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="popular-tags section top-margin">
+    <div class="container">
+        <h2 class="title section-title" data-name="categories">Categories</h2>
+        <div class="popular-tags-container d-grid">
+            {% for category in category_list %}
+            <a href="" class="article">
+                <span class="tag-name">{{ category.title }}</span>
+                <img src="/media/{{category.image}}" alt="" class="article-image">
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% endblock %}

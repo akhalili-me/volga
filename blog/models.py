@@ -7,6 +7,7 @@ import os
 from uuid import uuid4
 from django.utils.deconstruct import deconstructible
 
+
 @deconstructible
 class PathAndRename(object):
 
@@ -19,24 +20,31 @@ class PathAndRename(object):
         filename = '{}.{}'.format(uuid4().hex, ext)
         # return the whole path to the file
         return os.path.join(self.path, filename)
-
-path_and_rename = PathAndRename('post/headers')
+post_image = PathAndRename('post/headers')
+category_image = PathAndRename('post/category')
 
 #########################
 #########################
 
+class Category(models.Model):
+    title = models.CharField(max_length=50)
+    image = models.ImageField(blank=True,upload_to=category_image)
+
+    def __str__(self):
+        return self.title
 
 class Post(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
     summary = models.CharField(max_length=255)
-    header_image = models.ImageField(blank=True,upload_to=path_and_rename)
+    header_image = models.ImageField(blank=True,upload_to=post_image)
     created_Date = models.DateTimeField(default=timezone.now())
     published_Date = models.DateTimeField(blank=True,null=True)
     like = models.IntegerField(default=0)
     views = models.IntegerField(default=0)
 
     author = models.ForeignKey(CustomUser, verbose_name=_("Author"), on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, verbose_name=_("Category"), on_delete=models.CASCADE)
 
     def publish_post(self):
         self.published_Date = timezone.now()
@@ -47,8 +55,6 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         return reverse('home')
-
-    
 
     def __str__(self):
         return self.title + ' | ' + self.author
@@ -72,9 +78,6 @@ class Comment(models.Model):
     def __str__(self):
         return self.content
 
-    
-    
-
 class Tag(models.Model):
     title = models.CharField(max_length=50)
     count = models.IntegerField()
@@ -85,23 +88,3 @@ class Tag(models.Model):
 class Post_Tag(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     tag = models.ForeignKey(Tag,on_delete=models.CASCADE)
-
-
-
-class Category(models.Model):
-    title = models.CharField(max_length=50)
-    content = models.TextField()
-
-    def get_all(self):
-        return self.objects.all
-
-
-    def __str__(self):
-        return self.title
-
-class Post_Category(models.Model):
-    post = models.ForeignKey(Post,on_delete=models.CASCADE)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
-
-
-

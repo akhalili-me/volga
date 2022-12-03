@@ -15,4 +15,5 @@ urlpatterns = [
      path('post/comment/<int:pk>', views.add_comment,name='add_comment'),
      path('post/aprrove-comment/<int:pk>', views.approve_comment,name='approve_comment'),
      path('post/remove-comment/<int:pk>', views.remove_comment,name='remove_comment'),
+     path('categories', views.CategoryListView.as_view(),name='category_list'),
 ]

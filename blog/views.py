@@ -53,9 +53,6 @@ class PostCreateView(LoginRequiredMixin,CreateView):
 
         return redirect('/')
 
-    
-
-
 
 class PostUpdateView(LoginRequiredMixin,UpdateView):
     login_url = '/login/'
@@ -77,6 +74,10 @@ class DraftListView(LoginRequiredMixin,ListView):
     queryset = Post.objects.filter(published_Date__isnull=True).order_by('-created_Date')
     template_name = 'blog/post_drafts.html'
     
+
+class CategoryListView(ListView):
+    queryset = Category.objects.all()
+    template_name = 'blog/category_list.html'
 
 #############################################
 #############################################

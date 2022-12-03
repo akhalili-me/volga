@@ -6,17 +6,12 @@ class PostForm(forms.ModelForm):
 
     class Meta:
         model = models.Post
-        fields = ('title','summary','content','header_image')
+        fields = ('title','summary','content','header_image','category')
 
     def __init__(self, *args, **kwargs):
         super(PostForm, self).__init__(*args, **kwargs)
         for visible in self.visible_fields():
             visible.field.widget.attrs['class'] = 'form-control'
-
-class CategoryForm(forms.ModelForm):
-    class Meta:
-        model = models.Post_Category
-        fields = ('category',)
 
 class CommentForm(forms.ModelForm):
     class Meta:
