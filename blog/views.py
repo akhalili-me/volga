@@ -1,11 +1,12 @@
 from django.shortcuts import render,get_object_or_404,redirect
 from blog.models import *
 from django.views.generic import CreateView,TemplateView,ListView,DetailView,UpdateView,DeleteView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin
 from blog.forms import *
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
+from blog.mixins import * 
 
 # class Home(TemplateView):
 #     template_name = 'main/home.html'
@@ -15,6 +16,9 @@ def Home(request):
     latest_articles = Post.objects.filter(published_Date__isnull=False).order_by('-published_Date')[:6]
     categories = Category.objects.all()
     latest_liked_articles = Post.objects.filter(published_Date=None).order_by('-like')[:3]
+
+
+    
 
     return render(request,'main/home.html')
 
@@ -62,11 +66,18 @@ class PostUpdateView(LoginRequiredMixin,UpdateView):
     template_name = 'blog/post_create.html'
 
 
-class PostDeleteView(LoginRequiredMixin,DeleteView):
+class PostDeleteView(UserPassesTestMixin,DeleteView):
     model = Post
     login_url = '/login'
     template_name = 'blog/post_delete.html'
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('blog:home')
+
+    def test_func(self):
+        post = self.get_object()
+        return post.author == self.request.user or self.request.user.is_superuser
+
+    def handle_no_permission(self):
+        return redirect('/')
 
 class DraftListView(LoginRequiredMixin,ListView):
     model = Post
@@ -81,6 +92,12 @@ class CategoryListView(ListView):
 
 #############################################
 #############################################
+
+def category_posts(request,pk):
+    category = get_object_or_404(Category,id=pk)
+    posts = Post.objects.filter(category=category)
+    return render(request,'blog/category_posts.html',{'posts':posts,'category':category})
+
 
 @login_required
 def publish_post(request,pk):

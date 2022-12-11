@@ -57,7 +57,7 @@ class Post(models.Model):
         return reverse('home')
 
     def __str__(self):
-        return self.title + ' | ' + self.author
+        return self.title + ' | ' + self.author.email
 
 
 class Comment(models.Model):

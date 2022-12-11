@@ -71,6 +71,11 @@ input[type='submit']:hover{
     text-decoration: none;
 }
 
+.Home_link{
+    margin-top: 0.3rem;
+    display: block;
+}
+
 .signup_link a:hover{
     text-decoration: underline;
 }

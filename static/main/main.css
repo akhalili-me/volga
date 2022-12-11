@@ -620,7 +620,7 @@ i{
     width: 20%;
     font-size: 2rem;
     margin-top: 4rem;
-
+    cursor: pointer;
 }
 .center{
     position: absolute;
@@ -658,6 +658,26 @@ i{
 .top-margin{
     margin-top: 4rem;
 }
+
+.Catogory button{
+    color: white;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    width: 15%;
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+}
+
+.Add-button{
+    background-color: rgb(13, 105, 206);
+}
+
+.Delete-button{
+    background-color: rgb(206, 13, 13) !important;
+}
+
+
 /* Media queries */
 
 @media screen and (min-width: 700px){

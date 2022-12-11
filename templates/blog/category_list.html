@@ -2,12 +2,12 @@
 
 {% block content %}
 
-<section class="popular-tags section top-margin">
+<section class="popular-tags section top-margin Catogory">
     <div class="container">
         <h2 class="title section-title" data-name="categories">Categories</h2>
         <div class="popular-tags-container d-grid">
             {% for category in category_list %}
-            <a href="" class="article">
+            <a href="{% url 'blog:category_posts' category.pk %}" class="article">
                 <span class="tag-name">{{ category.title }}</span>
                 <img src="/media/{{category.image}}" alt="" class="article-image">
             </a>

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div class="new-post-container">
+        <h2 class="title section-title" data-name="Delete Post">Delete Post</h2>
+        <form class="new-post-form" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <p>Are you sure you want to delete "{{ object }}"?</p>
+            <button type="submit" class="center Delete-button">Delete</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
