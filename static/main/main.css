@@ -628,6 +628,12 @@ i{
     transform: translate(-50%, -50%)
 }
 
+.center_screen{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%)
+}
 .form-control {
     display: block;
     width: 100%;
@@ -659,7 +665,7 @@ i{
     margin-top: 4rem;
 }
 
-.Catogory button{
+.button{
     color: white;
     padding: 1rem;
     border-radius: 0.5rem;
@@ -677,7 +683,20 @@ i{
     background-color: rgb(206, 13, 13) !important;
 }
 
-
+.del_button{
+    color: rgb(232, 230, 227);
+    background-color: rgb(206, 13, 13);
+    border-color: rgb(13, 94, 182);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    width: 10%;
+    font-size: 2rem;
+    margin-top: 4rem;
+    cursor: pointer;
+}
+.edit_button{
+    background-color: rgb(13, 105, 206) !important;
+}
 /* Media queries */
 
 @media screen and (min-width: 700px){

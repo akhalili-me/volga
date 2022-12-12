@@ -30,8 +30,13 @@
                 </p>
             </blockquote>
 
-           
-
+            {% if author_permission %}
+            <div>
+            <button class="del_button"><a href="{% url 'blog:post_delete' post.id %}">Delete</a></button>
+            <button class="del_button edit_button"><a href="{% url 'blog:post_update' post.id %}">Edit</a></button>
+            </div>
+            
+            {% endif %}
             <div class="author d-grid">
                 <div class="author-image-box">
                     <img src="./assets/images/author.jpg" alt="" class="article-image">

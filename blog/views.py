@@ -33,11 +33,13 @@ class PostDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
-        post = Post.objects.get(pk = self.kwargs['pk'])
+        post = self.get_object()
 
         if post.published_Date is None :
             raise Http404('Page not found')
+
+        if post.author == self.request.user:
+            context['author_permission'] = True
 
         return context
 
@@ -49,9 +51,11 @@ class PostCreateView(LoginRequiredMixin,CreateView):
     template_name = 'blog/post_create.html'
 
     def form_valid(self, form):
+        
         self.post = form.save(commit=False)
         self.post.author = self.request.user
         self.post.save()
+
         if form.cleaned_data['publish'] == True:
             self.post.publish_post()
 
@@ -61,8 +65,7 @@ class PostCreateView(LoginRequiredMixin,CreateView):
 class PostUpdateView(LoginRequiredMixin,UpdateView):
     login_url = '/login/'
     model = Post
-    form_class = PostForm
-    # redirect_field_name = '/'
+    form_class = UpdateForm
     template_name = 'blog/post_create.html'
 
 

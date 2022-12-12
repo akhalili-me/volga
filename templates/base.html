@@ -40,7 +40,7 @@
                     </li>
                     {% if user.is_authenticated %}
                         <li class="list-item screen-lg-hidden">
-                            <p>Welcome, {{ user.get_username }}</p>
+                            <a href="{% url 'users:profile' %}" class="list-link">Profile</a>
                         </li>
                     {% else %}
                         <li class="list-item screen-lg-hidden">
@@ -68,7 +68,7 @@
                 {% if user.is_authenticated %}
                 <a href="{% url 'users:logout' %}" class="list-link screen-sm-hidden">Logout</a>
                 <a href="{% url 'blog:post_create' %}" class="list-link screen-sm-hidden">New Post</a>
-                <span>Welcome {{ user.get_username }}</span>
+                <a href="{% url 'users:profile' %}" class="list-link screen-sm-hidden">Profile</a>
 
                 {% else %}
 

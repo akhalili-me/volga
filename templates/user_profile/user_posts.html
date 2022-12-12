@@ -4,13 +4,13 @@
 
 <section class="older-posts section top-margin">
     <div class="container">
-        <h2 class="title section-title" data-name="Archive">Archive</h2>
+        <h2 class="title section-title" data-name="{{ request.user }}">{{ request.user }}</h2>
         <div class="older-posts-grid-wrapper d-grid">
 
-            {% for post in post_list %}
+            {% for post in posts %}
             <a href="{% url 'blog:post' pk=post.pk %}" class="article d-grid">
                 <div class="older-posts-article-image-wrapper">
-                    <img src="./media/{{post.header_image}}" alt="" class="article-image">
+                    <img src="/media/{{post.header_image}}" alt="" class="article-image">
                 </div>
 
                 <div class="article-data-container">
@@ -26,7 +26,6 @@
                     <p class="article-description">
                         {{ post.summary }}
                     </p>
-                    <!-- <h3>Author: {{ post.author }}</h3> -->
                 </div>
            
             </a>

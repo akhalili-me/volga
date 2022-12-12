@@ -79,3 +79,10 @@ input[type='submit']:hover{
 .signup_link a:hover{
     text-decoration: underline;
 }
+
+.center_screen{
+    position: absolute;
+    left: 50%;
+    top: 30%;
+    transform: translate(-50%, -50%)
+}
