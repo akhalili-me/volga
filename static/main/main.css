@@ -697,6 +697,17 @@ i{
 .edit_button{
     background-color: rgb(13, 105, 206) !important;
 }
+
+
+.step-links button{
+    width: auto !important;
+    font-size: 1.5rem !important;
+}
+
+.pagination{
+    margin-top: 3rem;
+}
+
 /* Media queries */
 
 @media screen and (min-width: 700px){

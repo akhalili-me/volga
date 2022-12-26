@@ -2,13 +2,15 @@ from django.shortcuts import render,redirect
 from blog.forms import *
 from users.forms import *
 from users.models import *
-from django.contrib.auth.decorators import login_required
-from django.http import Http404
+from django.contrib.auth.decorators import login_required,user_passes_test
 from blog.models import *
 
+@user_passes_test(lambda u: u.is_authenticated==False,redirect_field_name='/')
 def forgot_password(request):
+
     if request.method == 'POST':
         form = ForgotPasswordForm(request.POST)
+
         if form.is_valid():
             email = form.cleaned_data['email']
             user = CustomUser.objects.get(email=email)
@@ -17,13 +19,12 @@ def forgot_password(request):
     return render(request,'registration/forgot_password.html',{'form':form})
 
 
+@user_passes_test(lambda u: u.is_authenticated==False,redirect_field_name='/')
 def register(request):
-
-    if request.user.is_athenticated :
-        raise Http404('Not Found')
 
     if request.method == 'POST':
         form = RegisterForm(request.POST)
+
         if form.is_valid():
             form.save()
             return redirect('/login/?signed=true')

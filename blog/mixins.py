@@ -10,4 +10,14 @@ class AdminRequiredMixin(UserPassesTestMixin):
         return redirect('/')
 
 
+class AuthorCheckMixin(UserPassesTestMixin):
+    
+    def test_func(self):
+        post = self.get_object()
+        return post.author == self.request.user 
+        
+    def handle_no_permission(self):
+        return redirect('/')
+
+
 

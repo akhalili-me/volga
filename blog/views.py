@@ -1,12 +1,13 @@
 from django.shortcuts import render,get_object_or_404,redirect
 from blog.models import *
 from django.views.generic import CreateView,TemplateView,ListView,DetailView,UpdateView,DeleteView
-from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from blog.forms import *
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from blog.mixins import * 
+from django.core.paginator import Paginator
 
 # class Home(TemplateView):
 #     template_name = 'main/home.html'
@@ -25,6 +26,7 @@ def Home(request):
 class PostListView(ListView):
     queryset = Post.objects.filter(published_Date__isnull=False).order_by('-published_Date')
     template_name = 'blog/post_archive.html'
+    paginate_by = 4
 
 
 class PostDetailView(DetailView):
@@ -51,7 +53,7 @@ class PostCreateView(LoginRequiredMixin,CreateView):
     template_name = 'blog/post_create.html'
 
     def form_valid(self, form):
-        
+
         self.post = form.save(commit=False)
         self.post.author = self.request.user
         self.post.save()
@@ -62,25 +64,20 @@ class PostCreateView(LoginRequiredMixin,CreateView):
         return redirect('/')
 
 
-class PostUpdateView(LoginRequiredMixin,UpdateView):
+class PostUpdateView(AuthorCheckMixin,UpdateView):
     login_url = '/login/'
     model = Post
     form_class = UpdateForm
     template_name = 'blog/post_create.html'
 
 
-class PostDeleteView(UserPassesTestMixin,DeleteView):
+
+class PostDeleteView(AuthorCheckMixin,DeleteView):
     model = Post
     login_url = '/login'
     template_name = 'blog/post_delete.html'
     success_url = reverse_lazy('blog:home')
 
-    def test_func(self):
-        post = self.get_object()
-        return post.author == self.request.user or self.request.user.is_superuser
-
-    def handle_no_permission(self):
-        return redirect('/')
 
 class DraftListView(LoginRequiredMixin,ListView):
     model = Post

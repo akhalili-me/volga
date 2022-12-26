@@ -7,7 +7,7 @@ app_name = 'users'
 
 urlpatterns = [
      #Athentication
-     path('login/', views.LoginView.as_view(authentication_form = UserLoginForm),name='login'),
+     path('login/', views.LoginView.as_view(authentication_form = UserLoginForm,redirect_authenticated_user=True),name='login'),
      path('logout', views.LogoutView.as_view(),name='logout'),
      path('forgot-password',forgot_password,name='forgot_password'),
      path('register',register,name='register'),
