@@ -53,7 +53,7 @@ class Post(models.Model):
     def total_Likes(self):
         return self.like.count()
 
-    def get_absolute_url(self):
+    def get_absolute_kurl(self):
         return reverse('blog:post',kwargs={'pk': self.pk})
 
     def __str__(self):
@@ -63,10 +63,10 @@ class Post(models.Model):
 class Comment(models.Model):
     content = models.CharField(max_length=500)
     created_Date = models.DateTimeField(default= timezone.now())
-    approved_Comment = models.BooleanField(default=False)
+    approved_Comment = models.BooleanField(default=True)
 
     author = models.ForeignKey(CustomUser, verbose_name=_("Author"), on_delete=models.CASCADE)
-    post = models.ForeignKey(Post, verbose_name=_("Post"), on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, verbose_name=_("Post"),related_name='comments', on_delete=models.CASCADE)
 
     def approve(self):
         self.approved_Comment = True

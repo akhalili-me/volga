@@ -7,7 +7,9 @@ from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from blog.mixins import * 
-from django.core.paginator import Paginator
+from django.db.models import Q
+from django.http import JsonResponse
+from django.core import serializers
 
 # class Home(TemplateView):
 #     template_name = 'main/home.html'
@@ -35,7 +37,10 @@ class PostDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        post = self.get_object()
+        post = self.get_object ()
+
+        form = CommentForm()
+        context['form'] = form
 
         if post.published_Date is None :
             raise Http404('Page not found')
@@ -109,18 +114,27 @@ def publish_post(request,pk):
 
 @login_required
 def add_comment(request,pk):
+
     post = get_object_or_404(Post,id=pk)
+
     if request.method == "POST":
         form = CommentForm(request.POST)
-        if CommentForm.is_valid():
+
+        if form.is_valid():
             comment = form.save(commit=False)
-            comment.author = request.user
             comment.post = post
+            comment.author = request.user
             comment.save()
-            return redirect('post',pk=post.id)
-    else:
-        form = CommentForm()
-        render(request,'blog/add_comment.html',{'comment_form': form})
+
+            ser_instance = serializers.serialize('json', [ comment, ])
+            # send to client side.
+            return JsonResponse({"instance": ser_instance}, status=200)
+        else:
+            # some form errors occured.
+            return JsonResponse({"error": form.errors}, status=400)
+
+    # some error occured
+    return JsonResponse({"error": ""}, status=400)
 
 
 

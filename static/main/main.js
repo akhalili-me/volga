@@ -68,3 +68,35 @@ const swiper = new Swiper('.swiper',{
         }
     }
 })
+
+//Comments
+$("#comment_form").submit(function(e){
+    e.preventDefault();
+    var serializedData = $(this).serialize();
+
+    $.ajax({
+        type: 'POST',
+        url: $(this).attr('action'),
+        data: serializedData,
+        success: function (response) {
+            // 1. clear the form.
+            $("#comment_form").trigger('reset');
+            // display the newly friend to table.
+            var instance = JSON.parse(response["instance"]);
+            var fields = instance[0]["fields"];
+            var user = JSON.parse(document.getElementById('user').textContent);
+            $("#user_comments").prepend(
+                `<div class="comment" >
+                    <p>
+                        <h3>${user}</h3>
+                        ${fields["content"]}
+                    </p>
+                </div>`
+            )
+        },
+        error: function (response) {
+            // alert the error if any error occured
+            alert(response["responseJSON"]["error"]);
+        }
+    })
+})

@@ -708,6 +708,30 @@ i{
     margin-top: 3rem;
 }
 
+.comment-btn{
+    margin-top: 1.5rem;
+    width: auto;
+}
+
+.comment{
+    border-style: solid;
+    border-width: 1.5px;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.comment-section h2{
+    margin-top: 3rem;
+}
+
+
+
+
+
+
+
+
 /* Media queries */
 
 @media screen and (min-width: 700px){

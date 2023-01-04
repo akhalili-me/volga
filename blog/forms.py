@@ -31,6 +31,11 @@ class CommentForm(forms.ModelForm):
         model = models.Comment
         fields = ('content',)
 
+    def __init__(self, *args, **kwargs):
+        super(CommentForm, self).__init__(*args, **kwargs)
+        for visible in self.visible_fields():
+            visible.field.widget.attrs['class'] = 'form-control'
+
 class TagForm(forms.ModelForm):
     class Meta:
         model = models.Tag
