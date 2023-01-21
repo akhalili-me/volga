@@ -725,12 +725,9 @@ i{
     margin-top: 3rem;
 }
 
-
-
-
-
-
-
+.comment-section a {
+    color: rgb(6, 125, 245);
+}
 
 /* Media queries */
 

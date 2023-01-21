@@ -92,7 +92,8 @@ $("#comment_form").submit(function(e){
                         ${fields["content"]}
                     </p>
                 </div>`
-            )
+            );
+            $("#comment_text").hide();
         },
         error: function (response) {
             // alert the error if any error occured

@@ -15,15 +15,33 @@ from django.core import serializers
 #     template_name = 'main/home.html'
 
 def Home(request):
+
     trending_articles = Post.objects.filter(published_Date__isnull=False).order_by('-views')[:4]
     latest_articles = Post.objects.filter(published_Date__isnull=False).order_by('-published_Date')[:6]
     categories = Category.objects.all()
-    latest_liked_articles = Post.objects.filter(published_Date=None).order_by('-like')[:3]
+    most_liked_articles = Post.objects.filter(published_Date__isnull=False).order_by('-like')[:4]
 
-
+    dup_post_list = list(most_liked_articles) + list(trending_articles) 
+    post_list = [*set(dup_post_list)]
     
+    main_3_articles = []
+    for i in range(3):
+        main_3_articles.append(post_list[i])
+        del [post_list[i]]
 
-    return render(request,'main/home.html')
+    for i in range(len(post_list)):
+        post_popularity = post_list[i].like + post_list[i].views
+
+        for idx, main in enumerate(main_3_articles):
+            main_popularity = main.like + main.views
+            if post_popularity > main_popularity:
+                main_3_articles[idx] = post_list[i]
+                break
+
+    context = {'trending':trending_articles,'latest': latest_articles,'categories':
+                categories,'latest_liked':most_liked_articles,'main_articles': main_3_articles}
+
+    return render(request,'main/home.html',context)
 
 class PostListView(ListView):
     queryset = Post.objects.filter(published_Date__isnull=False).order_by('-published_Date')
@@ -42,7 +60,7 @@ class PostDetailView(DetailView):
         form = CommentForm()
         context['form'] = form
 
-        if post.published_Date is None :
+        if post.published_Date is None and post.author != self.request.user:
             raise Http404('Page not found')
 
         if post.author == self.request.user:
@@ -83,13 +101,6 @@ class PostDeleteView(AuthorCheckMixin,DeleteView):
     template_name = 'blog/post_delete.html'
     success_url = reverse_lazy('blog:home')
 
-
-class DraftListView(LoginRequiredMixin,ListView):
-    model = Post
-    login_url = '/login/'
-    queryset = Post.objects.filter(published_Date__isnull=True).order_by('-created_Date')
-    template_name = 'blog/post_drafts.html'
-    
 
 class CategoryListView(ListView):
     queryset = Category.objects.all()

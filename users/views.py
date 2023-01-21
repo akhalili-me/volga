@@ -4,6 +4,9 @@ from users.forms import *
 from users.models import *
 from django.contrib.auth.decorators import login_required,user_passes_test
 from blog.models import *
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import ListView
+
 
 @user_passes_test(lambda u: u.is_authenticated==False,redirect_field_name='/')
 def forgot_password(request):
@@ -39,8 +42,21 @@ def register(request):
 def user_profile(request):
     return render(request,'user_profile/profile.html')
 
-@login_required
-def user_posts(request):
-    user = request.user
-    user_posts = Post.objects.filter(author = user,published_Date__isnull=False).order_by('-published_Date')
-    return render(request,'user_profile/user_posts.html',{'posts':user_posts})
+class UserPostsListView(LoginRequiredMixin,ListView):
+    model = Post
+    login_url = '/login/'
+    template_name = 'user_profile/user_posts.html'
+    paginate_by = 4
+
+    def get_queryset(self):
+        return Post.objects.filter(author = self.request.user,published_Date__isnull=False).order_by('-published_Date')
+
+
+class DraftListView(LoginRequiredMixin,ListView):
+    model = Post
+    login_url = '/login/'
+    template_name = 'user_profile/post_drafts.html'
+    paginate_by = 4
+
+    def get_queryset(self):
+        return Post.objects.filter(author = self.request.user,published_Date__isnull=True).order_by('-created_Date')

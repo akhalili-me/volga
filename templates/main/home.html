@@ -6,118 +6,46 @@
     <div class="featured-articles-container container d-grid">
         
         <div class="featured-content d-grid">
-            <a href="./post.html" class="article featured-articles featured-article-1">
-                <img src="/media/post/headers/older_posts_1.jpg" alt="" class="article-image">
-                <span class="article-category">Technology</span>
+            {% for post in main_articles %}
+            <a href="{% url 'blog:post' pk=post.pk %}" class="article featured-articles featured-article-{{ forloop.counter }}">
+                <img src="./media/{{post.header_image}}" alt="" class="article-image">
+                <span class="article-category">{{post.category}}</span>
                 <div class="article-data-container">
 
                     <div class="article-data">
-                        <span>Dec 5th 2021 </span>
+                        <span>{{post.published_Date|date:"M d, Y"}} </span>
                         <span class="article-data-spacer"></span>
-                        <span>8 min read</span>
+                        <span>{{ post.like }} Likes</span>
                     </div>
                     <h3 class="title article-title">
-                        Is VR the future?
+                        {{post.title}}
                     </h3>
                 </div>
             </a>
-            <a href="./post.html" class="article featured-articles featured-article-2">
-                <img src="./assets/images/featured/featured-2.jpg" alt="" class="article-image">
-                <span class="article-category">Technology</span>
-                <div class="article-data-container">
-
-                    <div class="article-data">
-                        <span>Dec 5th 2021 </span>
-                        <span class="article-data-spacer"></span>
-                        <span>8 min read</span>
-                    </div>
-                    <h3 class="title article-title">
-                        Is VR the future?
-                    </h3>
-                </div>
-            </a>
-            <a href="./post.html" class="article featured-articles featured-article-3">
-                <img src="./assets/images/featured/featured-3.jpg" alt="" class="article-image">
-                <span class="article-category">Technology</span>
-                <div class="article-data-container">
-
-                    <div class="article-data">
-                        <span>Dec 5th 2021 </span>
-                        <span class="article-data-spacer"></span>
-                        <span>8 min read</span>
-                    </div>
-                    <h3 class="title article-title">
-                        Is VR the future?
-                    </h3>
-                </div>
-            </a>
-
-           
+            {% endfor %}
         </div>    
 
         <!-- Sidebar -->
         <div class="sidebar d-grid">
             <h3 class="title featured-content-title">Trending articles</h3>
-            <a href="" class="trending-articles-box">
+
+            {% for article in trending %}
+           
+            <a href="{% url 'blog:post' pk=article.pk %}" class="trending-articles-box">
                 <div class="trending-articles-image-box">
-                    <span class="trending-number place-items-center">1</span>
-                    <img src="./assets/images/trending/trending_1.jpg" alt="" class="article-image">
+                    <span class="trending-number place-items-center">0{{ forloop.counter }}</span>
+                    <img src="./media/{{article.header_image}}" alt="" class="article-image">
                 </div>
                 <div class="trending-article-data">
                     <div class="article-data">
-                        <span>Dec 5th 2021 </span>
+                        <span>{{article.published_Date|date:"M d, Y"}}</span>
                         <span class="article-data-spacer"></span>
-                        <span>8 min read</span>
+                        <span>{{ article.like }} Likes</span>
                     </div>
-                    <h3 class="title article-title">Sample Article Item</h3>
+                    <h3 class="title article-title">{{article.title}}</h3>
                 </div>
             </a>
-
-            <a href="" class="trending-articles-box">
-                <div class="trending-articles-image-box">
-                    <span class="trending-number place-items-center">01</span>
-                    <img src="./assets/images/trending/trending_3.jpg" alt="" class="article-image">
-                </div>
-                <div class="trending-article-data">
-                    <div class="article-data">
-                        <span>Dec 5th 2021 </span>
-                        <span class="article-data-spacer"></span>
-                        <span>8 min read</span>
-                    </div>
-                    <h3 class="title article-title">Sample Article Item</h3>
-                </div>
-            </a>
-
-            <a href="" class="trending-articles-box">
-                <div class="trending-articles-image-box">
-                    <span class="trending-number place-items-center">01</span>
-                    <img src="./assets/images/trending/trending_2.jpg" alt="" class="article-image">
-                </div>
-                <div class="trending-article-data">
-                    <div class="article-data">
-                        <span>Dec 5th 2021 </span>
-                        <span class="article-data-spacer"></span>
-                        <span>8 min read</span>
-                    </div>
-                    <h3 class="title article-title">Sample Article Item</h3>
-                </div>
-            </a>
-            <a href="" class="trending-articles-box">
-                <div class="trending-articles-image-box">
-                    <span class="trending-number place-items-center">01</span>
-                    <img src="./assets/images/trending/trending_4.jpg" alt="" class="article-image">
-                </div>
-                <div class="trending-article-data">
-                    <div class="article-data">
-                        <span>Dec 5th 2021 </span>
-                        <span class="article-data-spacer"></span>
-                        <span>8 min read</span>
-                    </div>
-                    <h3 class="title article-title">Sample Article Item</h3>
-                </div>
-            </a>
-
-
+            {% endfor %}
         </div>
     </div>
 </section>
@@ -130,65 +58,22 @@
         <div class="swiper">
             <div class="swiper-wrapper">
 
-                <a href="" class="article swiper-slide">
-                    <img src="./assets/images/quick_read/quick_read_1.jpg" alt="" class="article-image">
+                {% for post in latest_liked %}
+                <a href="{% url 'blog:post' pk=post.pk %}" class="article swiper-slide">
+                    <img src="./media/{{post.header_image}}" alt="" class="article-image">
                     <div class="article-data-container">
 
                         <div class="article-data">
-                            <span>Dec 5th 2021 </span>
+                            <span>{{ post.published_Date|date:"M d, Y" }} </span>
                             <span class="article-data-spacer"></span>
-                            <span>8 min read</span>
+                            <span>{{ post.like }} Likes</span>
                         </div>
                         <h3 class="title article-title">
-                            Is VR the future?
+                            {{ post.title }}
                         </h3>
                     </div>
                 </a>
-
-                <a href="" class="article swiper-slide">
-                    <img src="./assets/images/quick_read/quick_read_4.jpg" alt="" class="article-image">
-                    <div class="article-data-container">
-
-                        <div class="article-data">
-                            <span>Dec 5th 2021 </span>
-                            <span class="article-data-spacer"></span>
-                            <span>8 min read</span>
-                        </div>
-                        <h3 class="title article-title">
-                            Is VR the future?
-                        </h3>
-                    </div>
-                </a>
-
-                <a href="" class="article swiper-slide">
-                    <img src="./assets/images/quick_read/quick_read_3.jpg" alt="" class="article-image">
-                    <div class="article-data-container">
-
-                        <div class="article-data">
-                            <span>Dec 5th 2021 </span>
-                            <span class="article-data-spacer"></span>
-                            <span>8 min read</span>
-                        </div>
-                        <h3 class="title article-title">
-                            Is VR the future?
-                        </h3>
-                    </div>
-                </a>
-
-                <a href="" class="article swiper-slide">
-                    <img src="./assets/images/quick_read/quick_read_2.jpg" alt="" class="article-image">
-                    <div class="article-data-container">
-
-                        <div class="article-data">
-                            <span>Dec 5th 2021 </span>
-                            <span class="article-data-spacer"></span>
-                            <span>8 min read</span>
-                        </div>
-                        <h3 class="title article-title">
-                            Is VR the future?
-                        </h3>
-                    </div>
-                </a>
+                {% endfor %}
             </div>
             
             <div class="swiper-button-prev swiper-controls"></div>
@@ -205,112 +90,28 @@
         <h2 class="title section-title" data-name="Older Posts">Older Posts</h2>
         <div class="older-posts-grid-wrapper d-grid">
 
-            <a href="" class="article d-grid">
+            {% for post in latest %}
+            <a href="{% url 'blog:post' pk=post.pk %}" class="article d-grid">
                 <div class="older-posts-article-image-wrapper">
-                    <img src="./assets/images/older_posts/older_posts_1.jpg" alt="" class="article-image">
+                    <img src="./media/{{post.header_image}}" alt="" class="article-image">
                 </div>
 
                 <div class="article-data-container">
                     <div class="article-data">
-                        <span>Dec 5th 2021 </span>
+                        <span>{{ post.published_Date|date:"M d, Y" }} </span>
                         <span class="article-data-spacer"></span>
-                        <span>8 min read</span>
+                        <span>{{ post.like }} Likes</span>
                     </div>
                     <h3 class="title article-title">
-                        Is VR the future?
+                        {{ post.title }}
                     </h3>
                     <p class="article-description">
-                        So how did the classical Latin become so incoherent?
-                        According to McClintock, a 15th century typesetter
-                        likely scrambled part of Cicero's De Finibus in order to provide.
+                        {{ post.summary }}
                     </p>
                 </div>
             </a>
+            {% endfor %}
 
-            <a href="" class="article d-grid">
-                <div class="older-posts-article-image-wrapper">
-                    <img src="./assets/images/older_posts/older_posts_2.jpg" alt="" class="article-image">
-                </div>
-
-                <div class="article-data-container">
-                    <div class="article-data">
-                        <span>Dec 5th 2021 </span>
-                        <span class="article-data-spacer"></span>
-                        <span>8 min read</span>
-                    </div>
-                    <h3 class="title article-title">
-                        Is VR the future?
-                    </h3>
-                    <p class="article-description">
-                        So how did the classical Latin become so incoherent?
-                        According to McClintock, a 15th century typesetter
-                        likely scrambled part of Cicero's De Finibus in order to provide.
-                    </p>
-                </div>
-            </a>
-            <a href="" class="article d-grid">
-                <div class="older-posts-article-image-wrapper">
-                    <img src="./assets/images/older_posts/older_posts_3.jpg" alt="" class="article-image">
-                </div>
-
-                <div class="article-data-container">
-                    <div class="article-data">
-                        <span>Dec 5th 2021 </span>
-                        <span class="article-data-spacer"></span>
-                        <span>8 min read</span>
-                    </div>
-                    <h3 class="title article-title">
-                        Is VR the future?
-                    </h3>
-                    <p class="article-description">
-                        So how did the classical Latin become so incoherent?
-                        According to McClintock, a 15th century typesetter
-                        likely scrambled part of Cicero's De Finibus in order to provide.
-                    </p>
-                </div>
-            </a>
-            <a href="" class="article d-grid">
-                <div class="older-posts-article-image-wrapper">
-                    <img src="./assets/images/older_posts/older_posts_4.jpg" alt="" class="article-image">
-                </div>
-
-                <div class="article-data-container">
-                    <div class="article-data">
-                        <span>Dec 5th 2021 </span>
-                        <span class="article-data-spacer"></span>
-                        <span>8 min read</span>
-                    </div>
-                    <h3 class="title article-title">
-                        Is VR the future?
-                    </h3>
-                    <p class="article-description">
-                        So how did the classical Latin become so incoherent?
-                        According to McClintock, a 15th century typesetter
-                        likely scrambled part of Cicero's De Finibus in order to provide.
-                    </p>
-                </div>
-            </a>
-            <a href="" class="article d-grid">
-                <div class="older-posts-article-image-wrapper">
-                    <img src="./assets/images/older_posts/older_posts_5.jpg" alt="" class="article-image">
-                </div>
-
-                <div class="article-data-container">
-                    <div class="article-data">
-                        <span>Dec 5th 2021 </span>
-                        <span class="article-data-spacer"></span>
-                        <span>8 min read</span>
-                    </div>
-                    <h3 class="title article-title">
-                        Is VR the future?
-                    </h3>
-                    <p class="article-description">
-                        So how did the classical Latin become so incoherent?
-                        According to McClintock, a 15th century typesetter
-                        likely scrambled part of Cicero's De Finibus in order to provide.
-                    </p>
-                </div>
-            </a>                
         </div>
         <div class="see-more-container">
             <a href="{% url 'blog:archive' %}" class="btn see-more-btn place-items-center">
@@ -327,25 +128,12 @@
     <div class="container">
         <h2 class="title section-title" data-name="popular tags">Popular Tags</h2>
         <div class="popular-tags-container d-grid">
-            <a href="" class="article">
-                <span class="tag-name">#Travel</span>
-                <img src="/assets/images/tags/travel-tag.jpg" alt="" class="article-image">
+            {% for category in categories %}
+            <a href="{% url 'blog:category_posts' category.pk %}" class="article">
+                <span class="tag-name">{{ category.title }}</span>
+                <img src="/media/{{category.image}}" alt="" class="article-image">
             </a>
-
-            <a href="" class="article">
-                <span class="tag-name">#Food</span>
-                <img src="/assets/images/tags/food-tag.jpg" alt="" class="article-image">
-            </a>
-
-            <a href="" class="article">
-                <span class="tag-name">#Dick</span>
-                <img src="/assets/images/tags/food-tag.jpg" alt="" class="article-image">
-            </a>
-
-            <a href="" class="article">
-                <span class="tag-name">#Food</span>
-                <img src="/assets/images/tags/food-tag.jpg" alt="" class="article-image">
-            </a>
+            {% endfor %}
         </div>
     </div>
 </section>

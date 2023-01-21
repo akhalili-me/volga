@@ -17,7 +17,6 @@
 
         <div class="container">
             {{ post.content|safe|linebreaksbr }}
-           
 
             <blockquote class="quote">
                 <p>
@@ -66,19 +65,51 @@
                 </form>
                 {% endif %}
                
+
                 {{request.user.email|json_script:"user" }}
                 <h2>Comments</h2>
                 <div id="user_comments">
-                {% for comment in post.comments.all reversed %}
-                    {% if comment.approved_Comment %}
-                        <div class="comment" >
-                            <p>
-                                <h3>{{ comment.author }}</h3>
-                                {{comment.content}}
-                            </p>
-                        </div>
+                    
+                <!-- {% for comment in post.comments.all reversed %}
+                {% if comment.approved_Comment %}
+                    <div class="comment" >
+                        <p>
+                            <h3>{{ comment.author }}</h3>
+                            {{comment.content}}
+                        </p>
+                    </div>
+                {% endif %}
+                {% endfor %} -->
+
+
+               
+
+                {% if post.comments.all %}
+                
+                    {% if not user.is_authenticated %}
+                    <p> login <a href="{% url 'users:login' %}">here</a> to submit a comment.</p>
                     {% endif %}
-                {% endfor %}
+
+                    {% for comment in post.comments.all reversed %}
+                        {% if comment.approved_Comment %}
+                            <div class="comment" >
+                                <p>
+                                    <h3>{{ comment.author }}</h3>
+                                    {{comment.content}}
+                                </p>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+
+                {% else %}
+
+                    {% if user.is_authenticated %}
+                        <p id="comment_text">No comments yet! Be the first to share your thoughts.</p>
+                    {% else %}
+                        <p>No comments yet! login <a href="{% url 'users:login' %}">here</a> to submit a comment.</p>
+                    {% endif %}
+
+                {% endif %}
                 </div>
 
 

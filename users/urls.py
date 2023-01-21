@@ -14,5 +14,6 @@ urlpatterns = [
 
      #Profile
      path('profile',user_profile,name='profile'),
-     path('profile/posts',user_posts,name='user_posts'),
+     path('profile/posts',UserPostsListView.as_view(),name='user_posts'),
+     path('profile/drafts',DraftListView.as_view(),name='user_drafts'),
 ]
