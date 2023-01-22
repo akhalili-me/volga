@@ -11,9 +11,6 @@ from django.db.models import Q
 from django.http import JsonResponse
 from django.core import serializers
 
-# class Home(TemplateView):
-#     template_name = 'main/home.html'
-
 def Home(request):
 
     trending_articles = Post.objects.filter(published_Date__isnull=False).order_by('-views')[:4]

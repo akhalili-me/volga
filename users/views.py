@@ -6,20 +6,7 @@ from django.contrib.auth.decorators import login_required,user_passes_test
 from blog.models import *
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView
-
-
-@user_passes_test(lambda u: u.is_authenticated==False,redirect_field_name='/')
-def forgot_password(request):
-
-    if request.method == 'POST':
-        form = ForgotPasswordForm(request.POST)
-
-        if form.is_valid():
-            email = form.cleaned_data['email']
-            user = CustomUser.objects.get(email=email)
-
-    form = ForgotPasswordForm()
-    return render(request,'registration/forgot_password.html',{'form':form})
+from django.core.mail import send_mail
 
 
 @user_passes_test(lambda u: u.is_authenticated==False,redirect_field_name='/')
@@ -60,3 +47,8 @@ class DraftListView(LoginRequiredMixin,ListView):
 
     def get_queryset(self):
         return Post.objects.filter(author = self.request.user,published_Date__isnull=True).order_by('-created_Date')
+
+
+
+
+

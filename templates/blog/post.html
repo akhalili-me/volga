@@ -69,20 +69,6 @@
                 {{request.user.email|json_script:"user" }}
                 <h2>Comments</h2>
                 <div id="user_comments">
-                    
-                <!-- {% for comment in post.comments.all reversed %}
-                {% if comment.approved_Comment %}
-                    <div class="comment" >
-                        <p>
-                            <h3>{{ comment.author }}</h3>
-                            {{comment.content}}
-                        </p>
-                    </div>
-                {% endif %}
-                {% endfor %} -->
-
-
-               
 
                 {% if post.comments.all %}
                 

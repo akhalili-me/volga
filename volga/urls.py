@@ -17,11 +17,20 @@ from django.contrib import admin
 from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
-
+from django.contrib.auth import views
+from users.views import *
+from users.forms import *
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('blog.urls')),
     path('', include('users.urls')),
+    path('', include('blog.urls')),
+
+    #reset password
+     path('reset_password/',views.PasswordResetView.as_view(form_class=ForgotPasswordForm,template_name='registration/forgot_password.html'),name='password_reset'),
+     path('reset_password_sent/',views.PasswordResetDoneView.as_view(template_name='registration/email_sent.html'),name='password_reset_done'),
+     path('reset/<uidb64>/<token>/',views.PasswordResetConfirmView.as_view(form_class=ResetPasswordForm,template_name='registration/reset_password.html'),name='password_reset_confirm'),
+     path('reset_password_complete/',views.PasswordResetCompleteView.as_view(template_name='registration/reset_password_done.html'),name='password_reset_complete'),
 ]
+
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
