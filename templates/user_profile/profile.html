@@ -6,7 +6,7 @@
     <div class="list-group">
         <a href="{% url 'users:user_posts' %}" class="list-group-item list-group-item-action">Posts</a>
         <a href="{% url 'users:user_drafts' %}" class="list-group-item list-group-item-action">Drafts</a>
-        <a href="#" class="list-group-item list-group-item-action">Comments</a>
+        <a href="{% url 'users:user_comments' %}" class="list-group-item list-group-item-action">Comments</a>
     </div>
 </div>
 {% endblock %}

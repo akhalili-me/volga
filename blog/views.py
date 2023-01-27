@@ -1,13 +1,12 @@
 from django.shortcuts import render,get_object_or_404,redirect
 from blog.models import *
-from django.views.generic import CreateView,TemplateView,ListView,DetailView,UpdateView,DeleteView
+from django.views.generic import CreateView,ListView,DetailView,UpdateView,DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from blog.forms import *
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from blog.mixins import * 
-from django.db.models import Q
 from django.http import JsonResponse
 from django.core import serializers
 
