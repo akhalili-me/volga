@@ -18,19 +18,6 @@
         <div class="container">
             {{ post.content|safe|linebreaksbr }}
 
-            <blockquote class="quote">
-                <p>
-                    <span><i class="ri-double-quotes-l"></i></span>
-                        Lorem, ipsum dolor sit amet consectetur adipisicing elit. 
-                        Debitis eius possimus hic eligendi distinctio rerum incidunt,
-                        esse quasi eum molestiae ducimus ipsam quae,
-                        aliquid ullam placeat dolorum nulla vero.
-                    <span><i class="ri-double-quotes-r"></i></span>
-                </p>
-            </blockquote>
-
-            
-
             <div>
             {% if author_permission %}
             <button class="del_button"><a href="{% url 'blog:post_delete' post.id %}">Delete</a></button>
@@ -43,20 +30,9 @@
             {% endif %}
             </div>
             
-            <div class="author d-grid">
-                <div class="author-image-box">
-                    <img src="./assets/images/author.jpg" alt="" class="article-image">
-                </div>
-
+            <div class="author">
                 <div class="author-about">
-                    <h3 class="author-name">John Doe</h3>
-                    <p>
-                        Lorem, ipsum dolor sit amet consectetur adipisicing elit. 
-                        Debitis eius possimus hic eligendi distinctio rerum incidunt,
-                        
-                    </p>
-
-                    
+                    <h3 class="author-name">Author: {{ post.author }}</h3>
                 </div>
             </div>
 
