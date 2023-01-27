@@ -114,10 +114,16 @@ def category_posts(request,pk):
 
 @login_required
 def publish_post(request,pk):
+    post = get_object_or_404(Post,id=pk)
+
+    if post.author != request.user or post.published_Date != None:
+        raise Http404()
+
     if request.method == 'POST':
-        post = get_object_or_404(Post,id=pk)
         post.publish_post()
         return redirect('blog:post',pk=pk)
+    
+    return render(request,'blog/post_publish.html',{'object':post})
 
 
 @login_required
