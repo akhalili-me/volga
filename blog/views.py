@@ -9,41 +9,31 @@ from django.http import Http404
 from blog.mixins import * 
 from django.http import JsonResponse
 from django.core import serializers
+from django.db.models import F, Sum
 
 def Home(request):
-
-    trending_articles = Post.objects.filter(published_Date__isnull=False).order_by('-views')[:4]
-    latest_articles = Post.objects.filter(published_Date__isnull=False).order_by('-published_Date')[:6]
+    trending_articles = Post.objects.filter(published_Date__isnull=False).order_by('-views')[:4].only('title','header_image','like','published_Date')
+    latest_articles = Post.objects.filter(published_Date__isnull=False).order_by('-published_Date')[:6].only('title','header_image','like','published_Date','summary')
     categories = Category.objects.all()
+    main_3_articles = Post.objects.filter(published_Date__isnull=False).annotate(total_popularity=Sum(F('like') + F('views'))).order_by('-total_popularity')[:3].select_related('category')
     most_liked_articles = Post.objects.filter(published_Date__isnull=False).order_by('-like')[:4]
 
-    dup_post_list = list(most_liked_articles) + list(trending_articles) 
-    post_list = [*set(dup_post_list)]
-    
-    main_3_articles = []
-    for i in range(3):
-        main_3_articles.append(post_list[i])
-        del [post_list[i]]
+    context = {
+        'trending': trending_articles,
+        'latest': latest_articles,
+        'categories': categories,
+        'latest_liked': most_liked_articles,
+        'main_articles': main_3_articles
+    }
 
-    for i in range(len(post_list)):
-        post_popularity = post_list[i].like + post_list[i].views
+    return render(request, 'main/home.html', context)
 
-        for idx, main in enumerate(main_3_articles):
-            main_popularity = main.like + main.views
-            if post_popularity > main_popularity:
-                main_3_articles[idx] = post_list[i]
-                break
 
-    context = {'trending':trending_articles,'latest': latest_articles,'categories':
-                categories,'latest_liked':most_liked_articles,'main_articles': main_3_articles}
-
-    return render(request,'main/home.html',context)
 
 class PostListView(ListView):
     queryset = Post.objects.filter(published_Date__isnull=False).order_by('-published_Date')
     template_name = 'blog/post_archive.html'
     paginate_by = 4
-
 
 class PostDetailView(DetailView):
     model = Post
@@ -51,40 +41,37 @@ class PostDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        post = self.get_object ()
+        post = self.object
+        user = self.request.user
+
+        # Check if the post is published or the user is the author
+        if post.published_Date is None and post.author != user:
+            raise Http404('Page not found')
+
+        context['author_permission'] = (post.author == user)
 
         form = CommentForm()
         context['form'] = form
 
-        if post.published_Date is None and post.author != self.request.user:
-            raise Http404('Page not found')
-
-        if post.author == self.request.user:
-            context['author_permission'] = True
-
         return context
 
-
-class PostCreateView(LoginRequiredMixin,CreateView):
-    login_url = '/login'
+class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     form_class = PostForm
     template_name = 'blog/post_create.html'
-
+    success_url = reverse_lazy('blog:post', args=['<pk>'])
+    
     def form_valid(self, form):
+        form.instance.author = self.request.user
+        response = super().form_valid(form)
 
-        self.post = form.save(commit=False)
-        self.post.author = self.request.user
-        self.post.save()
-
-        if form.cleaned_data['publish'] == True:
-            self.post.publish_post()
-
-        return redirect('/')
+        if form.cleaned_data['publish']:
+            self.object.publish_post()
+        
+        return response
 
 
 class PostUpdateView(AuthorCheckMixin,UpdateView):
-    login_url = '/login/'
     model = Post
     form_class = UpdateForm
     template_name = 'blog/post_create.html'
@@ -93,7 +80,6 @@ class PostUpdateView(AuthorCheckMixin,UpdateView):
 
 class PostDeleteView(AuthorCheckMixin,DeleteView):
     model = Post
-    login_url = '/login'
     template_name = 'blog/post_delete.html'
     success_url = reverse_lazy('blog:home')
 
@@ -127,26 +113,25 @@ def publish_post(request,pk):
 
 @login_required
 def add_comment(request,pk):
-
+    # Get the post object or raise a 404 error if it does not exist
     post = get_object_or_404(Post,id=pk)
 
     if request.method == "POST":
+        # Get the comment form and validate it
         form = CommentForm(request.POST)
-
         if form.is_valid():
-            comment = form.save(commit=False)
-            comment.post = post
-            comment.author = request.user
-            comment.save()
-
+            form.instance.post = post
+            form.instance.author = request.user
+            comment = form.save()
+            # Serialize the comment object and return it as a JSON response
             ser_instance = serializers.serialize('json', [ comment, ])
             # send to client side.
             return JsonResponse({"instance": ser_instance}, status=200)
         else:
-            # some form errors occured.
+            # Return the form errors as a JSON response
             return JsonResponse({"error": form.errors}, status=400)
 
-    # some error occured
+    # Return an empty JSON response with an error status code
     return JsonResponse({"error": ""}, status=400)
 
 
